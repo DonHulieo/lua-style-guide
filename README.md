@@ -472,35 +472,35 @@ coords = nil
 While this serves well for smaller datasets, it's harder to manage on a larger datasets. For example, we have a function that sorts a table of vectors, clockwise from a given point. (If not using the table.sort method) This operation will cache the orginal table, and will create a new table to store the sorted data. As well as a variable to store the angle of the vector. This will result in 3 variables being cached, and 3 variables being removed from memory.
 
 ```lua
-local function SortTable(t, center)
-    local sorted = {}
-    local function GetAngle(p)
-        local angle = math.atan2(p.y - center.y, p.x - center.x)
-        if angle < 0 then
-            angle = angle + math.pi * 2
-        end
-        return angle
+local function sortTable(t, center)
+  local sorted = {}
+  local function getAngle(p)
+    local angle = math.atan2(p.y - center.y, p.x - center.x)
+    if angle < 0 then
+      angle = angle + math.pi * 2
     end
-    for i = 1, #t do
-        local inserted = false
-        for j = 1, #sorted do
-            if GetAngle(t[i]) < GetAngle(sorted[j]) then
-                table.insert(sorted, j, t[i])
-                inserted = true
-                break
-            end
-        end
-        if not inserted then
-            sorted[#sorted + 1] = t[i]
-        end
+    return angle
+  end
+  for i = 1, #t do
+    local inserted = false
+    for j = 1, #sorted do
+      if getAngle(t[i]) < getAngle(sorted[j]) then
+        table.insert(sorted, j, t[i])
+        inserted = true
+        break
+      end
     end
-    return sorted
+    if not inserted then
+      sorted[#sorted + 1] = t[i]
+    end
+  end
+  return sorted
 end
 
 RegisterNetEvent('don:client:SortTable', function(table)
-    local sorted = SortTable(table, vector3(0, 0, 0))
-    print(sorted)
-    collectgarbage("collect")
+  local sorted = sortTable(table, vector3(0, 0, 0))
+  print(sorted)
+  collectgarbage("collect")
 end)
 ```
 
