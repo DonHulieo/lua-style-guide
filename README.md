@@ -1,9 +1,9 @@
 <!-- markdownlint-configure-file { "no-inline-html": { "allowed_elements": ["details", "summary"] } } -->
 # FiveM Lua Style Guide
 
-The style documentation for all `don` resources, helping maintain consitent & readable codebases.
+The style documentation for all `don` resources, helping maintain consistent & readable codebases.
 
-This document is a work in progress, and is subject to change. If you have any suggestions, please feel free to open an issue or a pull request.
+This document is a work in progress and is subject to change. If you have any suggestions, please feel free to open an issue or a pull request.
 
 ## Table of Contents
 
@@ -55,7 +55,7 @@ end
 
 ### Whitespace
 
-Whitespace is instrumental in making code readable, and should be used to separate elements.
+Whitespace is instrumental in making code readable and should be used to separate elements.
 > Following English grammar, `,`'s and all [operators](https://www.lua.org/manual/5.4/manual.html#3.4) (except `..`) should have a space after them at least. However, both parentheses and brackets should not have a space before or after them.
 
 <details>
@@ -73,11 +73,15 @@ local function hello_world() return string end
 ### Comments
 
 Well written code should be self-documenting. However, there will be times where additional comments are needed.
-> Single line comments should have a space after the `--`, and multiline comments should have `--` after the closing `]]`.
+> Single line comments should have a space after the `--` and multiline comments should have `--` after the closing `]]`.
 >
-> Comments should endeavour to explain why the code is doing what it is doing, opposed to what it is doing.
+> Comments should endeavour to explain why the code is performing a function, opposed to what it is doing.
 >
-> Each region of code should be separated by a: `-------------------------------- [SUBREGION? REGION] --------------------------------`.
+> Each region of code should be separated by a:
+>
+> ```lua
+> -------------------------------- [SUBREGION? REGION] --------------------------------
+> ```
 >
 > Those regions follow the following format, with optonal subregions:
 > | Region | Sub Region |
@@ -110,10 +114,10 @@ end
 
 ### Constants
 
-Lua `5.4` introduced the `<const>` keyword, and as such only resources which fxmanifest sets `lua54 'yes'` should use `<const>`. This keyword is also limiting, as once a variable is declared, it's [immutable](https://www.lua.org/manual/5.4/manual.html#3.3.7).
+Lua `5.4` introduced the `<const>` keyword and as such only resources which fxmanifest sets `lua54 'yes'` should use `<const>`. This keyword is also limiting, as once a variable is declared, it's [immutable](https://www.lua.org/manual/5.4/manual.html#3.3.7).
 > Constants should be named using `UPPER_SNAKE_CASE`[^1], with global constants prefixed with an underscore.
 >
-> If available, the `<const>` keyword should be used as well to indicate that the variable is a constant.
+> If available & applicable, the `<const>` keyword should be used as well to indicate that the variable is a constant.
 
 [^1]: As a fun tidbit, conventionally named [SCREAMING_SNAKE_CASE](https://en.wikipedia.org/wiki/Snake_case).
 
@@ -129,10 +133,10 @@ local MY_LOCAL_CONSTANT = 0
 
 ### Variables
 
-One of Lua's strengths is it's dynamic typing, and as such, it is important to name variables descriptively & unambiguously.
-> As a general rule, a variable should be more descriptive as it's scope gets larger. Using `i` and `k` inside a for loop is fine, but using them to describe a global variable is not.
+One of Lua's strengths is it's dynamic typing and as such, it is important to name variables descriptively & unambiguously.
+> As a general rule, a variable should be more descriptive as it's scope gets larger. Using `i` and `k` inside a `for` loop is fine, but using them to describe a global variable is not.
 >
-> Variables should be named using `snake_case`, with global variables using `UPPER_SNAKE_CASE`.
+> Variables should be named using `snake_case`, with global variables using `UPPER_SNAKE_CASE`[^1].
 >
 > - `boolean` variables should be prefixed with a verb, prefixed with `is`, `has`, `can`, etc.
 > - `number`, `string` or `vector` variables should use a simple noun or adjective.
@@ -157,7 +161,7 @@ end
 
 ### Objects
 
-Objects are a powerful tool in Lua, storing all lua data types and can be arrays, objects, classes, etc. Due to their multi-faceted nature, there are some conventions to follow.
+Objects are a powerful tool in Lua, storing all lua data types and can be arrays, objects, classes, or more. Due to their multi-faceted nature, there are some conventions we should follow.
 > Objects should be named using `PascalCase` if outside the scope of a function, and `camelCase` if inside the scope of a function.
 >
 > Arrays should be declared without number keys, unless needed.
@@ -187,9 +191,9 @@ end
 ### Functions
 
 The Lua has 3 hidden beauties' that make it a powerful language. First is that functions are first class citizens, second is that it's scope is global by default and the third is it's automatic garbage collection. Having these be uniform helps maintain the spotlight on these features.
-> Local functions should be named using `snake_case`, and global functions should be named using `PascalCase`.
+> Local functions should be named using `snake_case`, with global functions should be named using `PascalCase`.
 >
-> Functions should only be completing a single task, their name should reflect this.
+> Functions should only be completing a single task and their name should reflect this.
 
 <details>
 <summary>Example</summary>
@@ -222,7 +226,7 @@ end
 ### Classes
 
 Whilst Lua doesn't have classes, it does have objects and these objects can be manipulated to act like classes.
-> Classes should be named using `PascalCase`, and the constructor should be named using `flatcase`.
+> Classes should be named using `PascalCase` and the methods should be named using `flatcase`.
 >
 > Classes should be prefixed with a `C` to indicate that it is a class.
 
@@ -254,8 +258,12 @@ end
 
 ### Events
 
-Events are critical in FiveM, as they are used to communicate between the client and server, and are used to trigger functions on the other side.
-> Events should be named using `PascalCase`, and should be prefixed with it's file name, and the context of the event: `resource:context:EventName`.
+Events are critical in FiveM, as they are used to communicate between the client and server and are used to trigger functions in each context.
+> Events should be named using `PascalCase` and should be prefixed with it's file name, as well as the context of the event:
+>
+>```lua
+> '[resource]:[context]:EventName'
+>```
 >
 > When declaring an event, there are 3 options depending on use and context:
 >
@@ -263,7 +271,7 @@ Events are critical in FiveM, as they are used to communicate between the client
 > - `RegisterNetEvent` for Network events declared on the client.
 > - `RegisterServerEvent` for Network events declared on the server.
 >
-> The handler function for each of the above should be used when declaring, and if possible, use a local function to handle the event.
+> The handler function for each of the above should be used when declaring and if possible, use a local function to handle the event.
 
 <details>
 <summary>Example</summary>
@@ -296,7 +304,7 @@ Git is a powerful tool, and when used correctly can make the development process
 
 #### Commits
 
-Commits are the bread and butter of git, and as such should be descriptive and concise.
+Commits are the bread & butter of git and as such should be descriptive & concise.
 > Commits follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) standard, and should be prefixed with one of the following:
 > | Type | Usage |
 > | --- | --- |
@@ -317,37 +325,42 @@ Commits are the bread and butter of git, and as such should be descriptive and c
 > - `scope` is the scope of the commit, and is optional.
 > - `description` is a short description of the commit.
 >
-> If any changes introduce a breaking change, the commit should has it's type suffixed with a `!`, and the description should be prefixed with `BREAKING CHANGE: <description>`.
+> If any changes introduce a breaking change, the commit should has it's type (and scope) suffixed with a `!` and the a footer with the breaking change.
+>
+> ```txt
+> > ![CAUTION]
+> > BREAKING CHANGE: <description>
+> ```
 
 <details>
 <summary>Example</summary>
 
-`
+```txt
 feat(client): Add TeleportToPed Fn
 
 Add a function to teleport the player to a ped.
-`
+```
 
-`
+```txt
 revert(client)!: Revert Add TeleportToPed Fn
 
 BREAKING CHANGE: This reverts commit 123456.
-`
+```
 
 </details>
 
 #### Versioning
 
-Versioning is a critical part of any software, and as such should be done correctly.
-> Versioning should follow the [Semantic Versioning](https://semver.org/) standard, and should be in the following format: `MAJOR.MINOR.PATCH`.
+Versioning is a critical part of any software and as such should be done correctly.
+> Versioning should follow the [Semantic Versioning](https://semver.org/) standard and should be in the following format: `MAJOR.MINOR.PATCH`.
 >
-> - `MAJOR` version when you make incompatible API changes,
-> - `MINOR` version when you add functionality in a backwards compatible manner, and
+> - `MAJOR` version when you make incompatible API changes.
+> - `MINOR` version when you add functionality in a backwards compatible manner.
 > - `PATCH` version when you make backwards compatible bug fixes.
 >
-> Pre-release versions should be suffixed with a `-` and the pre-release version, and build metadata should be suffixed with a `+` and the build metadata.
+> Pre-release versions should be suffixed with a `-` and the pre-release version and build metadata should be suffixed with a `+` and the build metadata.
 >
-> The version should be stored in the `fxmanifest.lua` file, and should be updated with each release.
+> The version should be stored in the `fxmanifest.lua` file and should be updated with each release.
 
 <details>
 <summary>Example</summary>
