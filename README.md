@@ -344,7 +344,8 @@ Add a function to teleport the player to a ped.
 ```txt
 revert(client)!: Revert Add TeleportToPed Fn
 
-BREAKING CHANGE: This reverts commit 123456.
+> ![CAUTION]
+> BREAKING CHANGE: This reverts commit 123456.
 ```
 
 </details>
