@@ -1,519 +1,363 @@
+<!-- markdownlint-configure-file { "no-inline-html": { "allowed_elements": ["details", "summary"] } } -->
 # FiveM Lua Style Guide
 
-This guide is intended to help you write Lua code that is consistent and easy to read. It is based on the [Lua Style Guide](http://lua-users.org/wiki/LuaStyleGuide), [FiveM Style Guide for Lua](https://github.com/project-error/fivem-lua-style) and [Effective FiveM Lua](https://manason.github.io/effective-fivem-lua/).
+The style documentation for all `don` resources, helping maintain consitent & readable codebases.
+
+This document is a work in progress, and is subject to change. If you have any suggestions, please feel free to open an issue or a pull request.
 
 ## Table of Contents
 
-* [Formatting](#formatting)
-  * [Indentation](#indentation)
-  * [Line Length](#line-length)
-  * [Whitespace](#whitespace)
-  * [Comments](#comments)
-* [Naming](#naming)
-  * [Constants](#constants)
-  * [Variables](#variables)
-  * [Tables](#tables)
-  * [Functions](#functions)
-  * [Classes](#classes)
-  * [Threads](#threads)
-  * [Events](#events)
-  * [Files](#files)
-* [Code Structure](#code-structure)
-  * [Functions](#function-structure)
-  * [Threads](#thread-structure)
-  * [Events](#event-structure)
-  * [Tables](#table-structure)
-  * [Classes](#class-structure)
-* [Optimisation](#optimisation)
-  * [Caching](#caching)
-  * [Global Variables](#global-variables)
-  * [Garbage Collection](#garbage-collection)
-* [Credits](#credits)
+- [FiveM Lua Style Guide](#fivem-lua-style-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Credits](#credits)
+  - [Formatting](#formatting)
+    - [Indentation](#indentation)
+    - [Whitespace](#whitespace)
+    - [Comments](#comments)
+  - [Naming](#naming)
+    - [Constants](#constants)
+    - [Variables](#variables)
+    - [Objects](#objects)
+    - [Functions](#functions)
+    - [Classes](#classes)
+    - [Events](#events)
+    - [Files](#files)
+    - [Git](#git)
+      - [Commits](#commits)
+      - [Versioning](#versioning)
+
+## Credits
+
+- [FiveM Docs](https://docs.fivem.net/docs/scripting-reference/)
+- [Lua Reference Manual](https://www.lua.org/manual/)
+- [LuaStyleGuide](http://lua-users.org/wiki/LuaStyleGuide)
+- [Effective FiveM Lua](https://manason.github.io/effective-fivem-lua/)
+- [FiveM Style Guide for Lua](https://github.com/project-error/fivem-lua-style)
+- [Lua Language Server](https://luals.github.io/wiki/annotations/)
 
 ## Formatting
 
 ### Indentation
 
-Tabs whilst being the most common, are not the best way to indent code. The reason for this is that tabs are not consistent across all editors. For example, if you have a tab set to 4 spaces in your editor, but someone else has it set to 2 spaces, the code losses it's consitency. This poses an issue as well when uploading code to GitHub, as GitHub will display tabs as 8 spaces. This is why spaces are preferred over tabs.
+There's much debate over 2 or 4 spaces for indentation, while 4 spaces is the most common (amongst FiveM developers), 2 spaces is the most common amongst Lua developers.
+> The [Programming in Lua](https://www.lua.org/pil/contents.html) book, the [Lua Reference Manual](https://www.lua.org/manual/), the [Beginning Lua Programming](https://www.amazon.com.au/dp/0470069171?ref_=mr_referred_us_au_au) book, the [lua-users-wiki](http://lua-users.org/wiki/) and the [Project Error](https://github.com/project-error/fivem-lua-style) use 2 spaces for indentation. As such, to follow the lua standard, we will use 2 spaces for indentation.
 
-The *Programming in Lua*, *The Lua Refrence Manual* and *Project Error* all use 2 spaces for indentation. This I believe will serve as the best indentation for two reasons. Firstly, Lua is inherently a heavily nested language, and 2 spaces allows for more code to be displayed on the screen at once. Secondly, 2 spaces alleviates the issue of tabs being inconsistent across editors.
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-function foo()
-∙∙∙∙print('bar')
-end
-
--- Good
-function foo()
-∙∙print('bar')
+for _, v in pairs(table) do
+  print(v)
 end
 ```
 
-### Line Length
-
-The maximum line length should be 160 characters. This is to ensure that the code does not go off the screen, this is not a *strict* rule however, more of an aim. If you need to go over 160 characters, then you should consider breaking the line up into multiple lines. One way of eaching this is to use a multi-line string, using the `[[` and `]]` syntax. Another way is to use a table, and then use the `table.concat` function to join the table together, some events also take a table as a parameter, so you can use that as well.
-
-```lua
--- Bad
-local someTable = { 'this is a very long string that goes over 160 characters and is very hard to read', 'this is a very long string that goes over 160 characters and is very hard to read' }
-
--- Good
-local someTable = {
-  'this is a very long string that goes over 160 characters and is very hard to read',
-  'this is a very long string that goes over 160 characters and is very hard to read'
-}
-```
+</details>
 
 ### Whitespace
 
-Whitespace is used to separate keywords, operators, and other elements. It is also used to make the code more readable. For example, you should put a space after a comma, and before and after an operator. You should also put a space after a keyword, such as `if`, `for`, `while`, etc. However, you should not put a space after a function name, or before and after a parenthesis.
+Whitespace is instrumental in making code readable, and should be used to separate elements.
+> Following English grammar, `,`'s and all [operators](https://www.lua.org/manual/5.4/manual.html#3.4) (except `..`) should have a space after them at least. However, both parentheses and brackets should not have a space before or after them.
+
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-local someTable = {'foo','bar'} or local someTable = { 'foo', 'bar' }
-local someTable = {foo='bar'} or local someTable = { foo = 'bar' }
-local someNumber = 1+1 
-local function foo()end or local function foo ()end
-
--- Good
-local someTable = {'foo', 'bar'}
-local someTable = {foo = 'bar'}
-local someNumber = 1 + 1
-local function foo() end
+local table = {1, 2, 3}
+local string = 'hello'..'world' or 'hello' .. 'world'
+local number = 1 + 2 * 3 / 4 - 5
+local function hello_world() return string end
 ```
+
+</details>
 
 ### Comments
 
-Well written code should be self-documenting. However, there are times where you need to add comments to explain what the code is doing. You should use comments to explain why the code is doing something, rather than what the code is doing, unless absolutely neccessary. For example, you should not write a comment that says `-- set the variable x to 5`. Instead, you should write a comment that says `-- if timmy wants 5 apples`. When writing comments, you should use `--` for single line comments, and `--[[` and `]]` for multi-line comments and the code should be indented and whitespace should be used to separate the comment from the code.
+Well written code should be self-documenting. However, there will be times where additional comments are needed.
+> Single line comments should have a space after the `--`, and multiline comments should have `--` after the closing `]]`.
+>
+> Comments should endeavour to explain why the code is doing what it is doing, opposed to what it is doing.
+>
+> Each region of code should be separated by a: `-------------------------------- [SUBREGION? REGION] --------------------------------`.
+>
+> Those regions follow the following format, with optonal subregions:
+> | Region | Sub Region |
+> | --- | --- |
+> | `FUNCTIONS` | `LOCAL` \| `GLOBAL` \| `CLASS` |
+> | `EVENTS` | `HANDLER` \| `NETWORK` |
+> | `CALLBACKS` | |
+> | `THREADS` | |
+>
+> Annotations should be used where reasonable and follow the [Lua Language Server](https://luals.github.io/wiki/annotations/) annotations.
 
-You should also use comments to separate code into logical sections, for example, you should use comments to separate the `functions`, `Threads`, `Event Handlers`, etc. Lastly, you should utilise the `---@class`, `---@param`, and `---@return` tags (at least) when writing comments. These tags are used by the [lua-language-server](https://github.com/LuaLS/lua-language-server/wiki/Annotations), and provide useful information to the server, such as the type of a variable, the type of a parameter, and the type of a return value.
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-local function helloWorld() -- this function prints hello world
-  print('hello world')
+-------------------------------- LOCAL FUNCTIONS --------------------------------
+
+---@param ped number The teleporting ped.
+---@param coords {x: number, y: number, z: number}|vector3 The coordinates to teleport the ped to.
+---@return boolean `true` if the player was teleported successfully.
+local function teleport_ped(ped, coords)
+  SetEntityCoords(ped, coords.x, coords.y, coords.z)
+  return true
 end
-
-RegisterNetEvent('helloWorld', function() -- this event calls the helloWorld function
-  helloWorld()
-end)
-
--- Good
-local function helloWorld() -- this function prints hello world
-  print('hello world')
-end
-
----------------------------------------------------------------------- EVENTS ----------------------------------------------------------------------
-
-RegisterNetEvent('print:helloWorld', function() -- this event calls the helloWorld function
-  print('hello world')
-end)
 ```
+
+</details>
 
 ## Naming
 
 ### Constants
 
-Lua doesn't provide a way to declare constants, so to differentiate constants from variables, constants should be written in `SNAKE_CASE`. Global constants should be prefixed with an underscore, this allows us to easily access variables and constants in the global scope, using `global` or `_G`. While this is not a foolproof way to differentiate constants from variables, it's better than the comments of hope.
+Lua `5.4` introduced the `<const>` keyword, and as such only resources which fxmanifest sets `lua54 'yes'` should use `<const>`. This keyword is also limiting, as once a variable is declared, it's [immutable](https://www.lua.org/manual/5.4/manual.html#3.3.7).
+> Constants should be named using `UPPER_SNAKE_CASE`[^1], with global constants prefixed with an underscore.
+>
+> If available, the `<const>` keyword should be used as well to indicate that the variable is a constant.
+
+[^1]: As a fun tidbit, conventionally named [SCREAMING_SNAKE_CASE](https://en.wikipedia.org/wiki/Snake_case).
+
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-someVariable = 5
-local someOtherVariable = 5
-
--- Good
-_SOME_VARIABLE = 5
-local SOME_OTHER_VARIABLE = 10
+_MY_GLOBAL_CONSTANT = 1
+local MY_LOCAL_CONSTANT = 0
 ```
 
-When naming constants, you should use the following rules:
-
-* Use `UPPER_SNAKE_CASE` for constants
-* Prefix global constants with an underscore
+</details>
 
 ### Variables
 
-As a general rule, a variable should be more descriptive as it's scope gets larger. While `k` is a perfectly fine variable name for a key in a for loop, it is not a good variable name for a boolean, where it's not immediately apparent what that boolean represents.
+One of Lua's strengths is it's dynamic typing, and as such, it is important to name variables descriptively & unambiguously.
+> As a general rule, a variable should be more descriptive as it's scope gets larger. Using `i` and `k` inside a for loop is fine, but using them to describe a global variable is not.
+>
+> Variables should be named using `snake_case`, with global variables using `UPPER_SNAKE_CASE`.
+>
+> - `boolean` variables should be prefixed with a verb, prefixed with `is`, `has`, `can`, etc.
+> - `number`, `string` or `vector` variables should use a simple noun or adjective.
+> - `index` or `key` variables should use `i` or `k`, respectively (moving towards `j`, `l`, etc. if needed).
+> - `unused` variables should be named `_`.
 
-Well named variables reduce the need for comments, and make the code more readable. This is why it is important to name variables descriptively. When naming variables, you should use `camelCase` for local variables, and `SNAKE_CASE` for global variables prefixed with an underscore (the exception to this is tables, explained below).
-
-```lua
--- Bad
-SV = 1
-local S_O_V = 0
-local dead = false
-
--- Good
-_SOME_VARIABLE = 1
-local someOtherVariable = 0
-local isDead = false
-```
-
-When naming variables, you should use the following rules:
-
-* Use `camelCase` for local variables
-* Use `SNAKE_CASE` for global variables prefixed with an underscore
-* Avoid using single letter variable names or abbreviations, except for `i` and `k`
-* When the variable is unused, use `_` as the variable name
-* When the variable is a boolean, prefix it with a verb
-* When the variable is a number, string or vector, use a simple noun or adjective
-* When the variable represents an index or key, use `i` or `k`
-
-### Tables
-
-Tables are a powerful tool in Lua, and are used to store data. Tables are also used to store functions, and are used to create classes. Tables should be named using `PascalCase`, no matter what the scope is. When naming tables, you should use a plural noun to describe what the table is. For example, `Peds` is a good table name, but `spawned` is not. This is because `spawned` doesn't inherently tell us *what* has spawned.
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-local spawned = {}
+DEBUG_MODE = true
+local is_player_dead = false
+local player_ped = PlayerPedId()
+local coords = GetEntityCoords(player_ped)
 
--- Good
-local Peds = {}
+for i = 1, 10 do
+  print(i)
+end
 ```
 
-When naming tables, you should use the following rules:
+</details>
 
-* Use `PascalCase` for tables
-* Use a plural noun to describe what the table is
+### Objects
+
+Objects are a powerful tool in Lua, storing all lua data types and can be arrays, objects, classes, etc. Due to their multi-faceted nature, there are some conventions to follow.
+> Objects should be named using `PascalCase` if outside the scope of a function, and `camelCase` if inside the scope of a function.
+>
+> Arrays should be declared without number keys, unless needed.
+>
+> An objects name should be a plural noun, describing what the object is (where applicable).
+
+<details>
+<summary>Example</summary>
+
+```lua
+local Players = {
+  {name = 'John', age = 21},
+  {name = 'Jane', age = 22}
+}
+
+local function print_players(players)
+  if type(players) ~= 'table' then return end
+  for i = 1, #players do
+  local player = players[i]
+    print(player.name)
+  end
+end
+```
+
+</details>
 
 ### Functions
 
-The Lua has 3 hidden beauties' that make it a powerful language. The first is that functions are first class citizens, the second is that it's scope is global by default and the third is it's automatic garbage collection. That means we can assign a function to a variable, and then call that variable as a function. This is why it is important to name functions descriptively, but this means that functions that are not local are *global by default*, most functions in a script *do not* need a global scope, and should therefore be local.
+The Lua has 3 hidden beauties' that make it a powerful language. First is that functions are first class citizens, second is that it's scope is global by default and the third is it's automatic garbage collection. Having these be uniform helps maintain the spotlight on these features.
+> Local functions should be named using `snake_case`, and global functions should be named using `PascalCase`.
+>
+> Functions should only be completing a single task, their name should reflect this.
 
-Local functions should be named using `camelCase`, Global functions however should be named using `PascalCase`. When naming functions, you should use a verb to describe what the function does. For example, `printHelloWorld` is a good function name, but `helloWorld` is not. This also helps with describing what the function returns (if anything at all).
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-local function helloWorld()
-  print('hello world')
+local TeleportedPlayers = {}
+
+---@param ped integer The teleporting ped.
+---@param target integer The target ped.
+---@return boolean `true` if the player was teleported successfully.
+local function teleport_to_ped(ped, target)
+  local player_id = GetPlayerFromServerId(ped)
+  local coords = GetEntityCoords(target)
+  SetEntityCoords(ped, coords.x, coords.y, coords.z)
+  TeleportedPlayers[player_id] = true
+  return true
 end
 
-function dead?()
-  if health == 0 then
-    return true
-  end
-  return false
-end
-
--- Good
-local function printHelloWorld()
-  print('hello world')
-end
-
-function IsPlayerDead()
-  if health == 0 then
-    return true
-  end
-  return false
+---@return boolean? `true` if the player has teleported.
+function HasPlayerTeleported(player)
+  return TeleportedPlayers[player]
 end
 ```
 
-When naming functions, you should use the following rules:
+</details>
 
-* Use `camelCase` for local functions
-* Use `PascalCase` for global functions
-* Use a verb to describe what the function does
-* Use a noun to describe what the function returns (if anything at all)
+> [!TIP]
+> Most functions should be local, as they are not intended to be called from outside the file.
 
 ### Classes
 
-Whilst Lua doesn't have classes, it does have tables, and we can use tables to create classes. When creating a class, you should use `PascalCase` for the class name, and `camelCase` for the constructor name. When naming classes, you should use a noun to describe what the class represents and prefix it with `C`. For example, `CPlayer` is a good class name, but `player` is not. This is because `player` could be a variable representing a player, or a function that returns a player.
+Whilst Lua doesn't have classes, it does have objects and these objects can be manipulated to act like classes.
+> Classes should be named using `PascalCase`, and the constructor should be named using `flatcase`.
+>
+> Classes should be prefixed with a `C` to indicate that it is a class.
+
+<details>
+<summary>Example</summary>
 
 ```lua
--- Bad
-local player = {}
-
-function player.new()
-  local self = {}
-  return self
-end
-
--- Good
-
 local CPlayer = {}
+CPlayer.__index = CPlayer
 
 function CPlayer.new()
-  local self = {}
+  local self = setmetatable({}, CPlayer)
   return self
 end
-```
 
-When naming classes, you should use the following rules:
-
-* Use `PascalCase` for the class name
-* Use `camelCase` for the constructor name
-* Use a noun to describe what the class represents and prefix it with `C`
-
-### Threads
-
-Threads in FiveM allow tasks to be run asynchronously, and are used to run tasks in the background. This poses a performance issue, as threads are not garbage collected, and can cause memory leaks. Threads which aren't intended to be run in the background should be named using `camelCase`, and threads which are intended to be run in the background should declared using without a name using `CreateThread(function() end)`. This is because threads which are intended to be run in the background are not intended to be called, and therefore don't need a name.
-
-```lua
--- Bad
-CreateThread(function()
-  while true do
-    Wait(0)
-    local player = PlayerPedId()
-    local coords = GetEntityCoords(player)
-    local heading = GetEntityHeading(player)
-    print('x: ' .. coords.x .. ' y: ' .. coords.y .. ' z: ' .. coords.z .. ' heading: ' .. heading)
-  end
-end)
-
--- Good
-local isPrintCoordsRunning = false
-local function printCoords()
-  isPrintCoordsRunning = true
-  CreateThread(function()
-    while isPrintCoordsRunning do
-      Wait(0)
-      local player = PlayerPedId()
-      local coords = GetEntityCoords(player)
-      local heading = GetEntityHeading(player)
-      print('x: ' .. coords.x .. ' y: ' .. coords.y .. ' z: ' .. coords.z .. ' heading: ' .. heading)
-    end
-  end)
-end
-```
-
-When naming threads, you should use the following rules:
-
-* Use `camelCase` for threads which aren't intended to be run in the background
-* Use `CreateThread(function() end)` for threads which are intended to be run in the background
-
-### Events
-
-Events are used to communicate between the client and server, and are used to trigger functions on the other side. Events should be named using `PascalCase`, and should be prefixed with `:server:` or `:client:` depending on which side the event is triggered on. When naming events, you should use a verb to describe what the event does. For example, `:server:KickPlayer` is a good event name, but `:server:kick` is not. This is because `:server:kick` doesn't inherently tell us *what* is being kicked.
-
-```lua
--- Bad
-RegisterNetEvent('kick')
-AddEventHandler('kick', function()
-  DropPlayer(source, 'You have been kicked')
-end)
-
--- Good
-RegisterNetEvent('don:server:KickPlayer', function()
-  DropPlayer(source, 'You have been kicked')
-end)
-```
-
-When naming events, you should use the following rules:
-
-* Use `PascalCase` for events
-* Use a verb to describe what the event does
-* Prefix events with `:server:` or `:client:` depending on which side the event is triggered on
-
-### Files
-
-Files are the main building blocks of any script or software, and it is important to name them descriptively. Files should be named using `LowerSnakeCase`, and should be prefixed with `cl_` or `sv_` depending on which side the resource is intended to run on. When naming resources, you should use a noun to describe what the resource is. For example, `cl_player` is a good resource name, but `player` is not. Preferreably, you should separate the resource into it's respective `client`, `server` and `shared` folders, and then name the files accordingly, without their prefix. This is because it is easier to find the file you are looking for, and it is easier to tell what the file does.
-
-When naming files, you should use the following rules:
-
-* Use `LowerSnakeCase` for files
-* Use a noun to describe what the resource is
-* Prefix files with `cl_` or `sv_` depending on which side the resource is intended to run on
-* Preferreably, you should separate the resource into it's respective `client`, `server` and `shared` folders, and then name the files accordingly, without their prefix
-
-## Code Structure
-
-### Function Structure
-
-Functions are pivotal to any script, and it is important to structure them in a way that is easy to read and understand. Local functions should be declared at the top of the file, in the order that they are called, and then global functions after that. Functions should only perform one task, and by doing so, avoid nesting. This is because nesting makes the code harder to read, and harder to understand. Functions should also be commented, and should be commented using `---` instead of `--`. This is because `---` is used by some IDEs to generate documentation for the function.
-
-```lua
----@param player number The players Ped ID
----@param coords table The coordinates to teleport the player to
----@return boolean Returns true if the player was teleported successfully
-local function teleportPlayer(player, coords)
-  SetEntityCoords(player, coords.x, coords.y, coords.z)
+function CPlayer:teleportped(target)
+  local player_id = GetPlayerFromServerId(self.ped)
+  local coords = GetEntityCoords(target)
+  SetEntityCoords(self.ped, coords.x, coords.y, coords.z)
+  TeleportedPlayers[player_id] = true
   return true
 end
 ```
 
-When structuring functions, you should use the following rules:
+</details>
 
-* Local functions should be declared at the top of the file, in the order that they are called, and then global functions after that
-* Functions should only perform one task, and by doing so, avoid nesting
-* Functions should be commented using `---` instead of `--`
+> [!NOTE]
+> Modules/packages are typically made with classes or class-like architecture, however, are named using `flatcase` and should not be prefixed with `C`. This is to imitate the libraries that Lua uses, such as `math`, `string`, etc.
 
-### Thread Structure
+### Events
 
-While global threads have no official structure, local threads do based on the nature of them (basically being a fancy local function). Local threads should be declared after local functions, and should be declared in the order that they are called. Threads should also be commented, and should be commented using `---@async` to indicate that the thread is asynchronous. This is because `---@async` is used by some IDEs to generate documentation for the thread. Local threads should also be commented using `---` for any additional information.
+Events are critical in FiveM, as they are used to communicate between the client and server, and are used to trigger functions on the other side.
+> Events should be named using `PascalCase`, and should be prefixed with it's file name, and the context of the event: `resource:context:EventName`.
+>
+> When declaring an event, there are 3 options depending on use and context:
+>
+> - `AddEventHandler` for local events (client <---> client or server <---> server).
+> - `RegisterNetEvent` for Network events declared on the client.
+> - `RegisterServerEvent` for Network events declared on the server.
+>
+> The handler function for each of the above should be used when declaring, and if possible, use a local function to handle the event.
 
-```lua
----@param player number The players Ped ID
----@async
---- Checks if the player has died, and sets a variable to true to break the thread if they have
-local playerHasDied = true
-local function checkPlayerDeath(player)
-  playerHasDied = false
-  CreateThread(function()
-    while not playerHasDied do
-      Wait(0)
-      if IsEntityDead(player) then
-        playerHasDied = true
-        break
-      end
-    end
-  end)
-end
-```
-
-When structuring threads, you should use the following rules:
-
-* Local threads should be declared after local functions, and should be declared in the order that they are called
-* Local threads should be commented using `---` instead of `--`
-* All threads should be commented using `---@async` to indicate that it is an asynchronous task
-
-### Event Structure
-
-Events should be declared after all functions and local threads, and should be declared in the order that they are called. Events have five important syntax rules, depending on the use case. The first rule is for events across the network (client <---> server), they must be registered using `RegisterNetEvent` or `RegisterServerEvent`, depending on which side the event is triggered on. The second rule is for events that trigger locally (client <---> client ot (server <---> server), only need to be registered by using `AddEventHandler`. The third rule for triggering events across the network is that they must be triggered using `TriggerServerEvent` or `TriggerClientEvent`, depending on which side the event is triggered on. The fourth rule for triggering events locally is that they must be triggered using `TriggerEvent`. The fifth rule, and most important for readability, is that events should only be declared once, and should follow the syntax relevant to their scope.
+<details>
+<summary>Example</summary>
 
 ```lua
----@param reason string The reason for kicking the player
-RegisterServerEvent('don:server:KickPlayer', function(reason)
-  TriggerClientEvent('don:client:KickPlayer', source, reason)
-end)
-
----@param reason string The reason for kicking the player
-RegisterNetEvent('don:client:KickPlayer', function(reason)
+---@param reason string The reason for kicking the player.
+---@param source integer The player\'s server ID.
+---@param resource string The resource name.
+local function kick_player(reason, source, resource)
   DropPlayer(source, reason)
-end)
-
----------------------------------------- LOCAL EVENTS ----------------------------------------
-
----@param player number The players Ped ID
-local function checkPlayerDeath(player)
-  CreateThread(function()
-    while true do
-      Wait(0)
-      if IsEntityDead(player) then
-        TriggerEvent('don:client:PlayerHasDied', player)
-        break
-      end
-    end
-  end)
+  print(('Player %s was kicked from %s for %s'):format(source, resource, reason))
 end
 
----@param player number The players Ped ID
-AddEventHandler('don:client:PlayerHasDied', function(player)
-  print('Player has died')
-end)
+RegisterServerEvent('don:server:KickPlayer', kick_player)
 ```
 
-When structuring events, you should use the following rules:
+</details>
 
-* Events should be declared after all functions and local threads, and should be declared in the order that they are called
-* Events across the network (client <---> server) must be registered using `RegisterNetEvent` or `RegisterServerEvent`, depending on which side the event is triggered on
-* Events that trigger locally (client <---> client ot (server <---> server), only need to be registered by using `AddEventHandler`
-* Events across the network must be triggered using `TriggerServerEvent` or `TriggerClientEvent`, depending on which side the event is triggered on
-* Events locally must be triggered using `TriggerEvent`
-* Events should only be declared once, and should follow the syntax relevant to their scope
+### Files
 
-### Table Structure
+Files are the main building blocks of any script or software, making knowing what you're working with all the more important.
+> Files should be named using `snake_case`, and they should either:
+>
+> - Be housed in a `client`, `server` or `shared` folder, and named accordingly.
+> - Prefixed with `cl_` or `sv_` depending on the context of the file.
 
-Tables are used to store data, and should be used to store data that is used across multiple functions. Tables should be declared at the top of the file, and should be declared in the order that they are used. Tables can be accessed using `table.key` or `table['key']`, but the former is preferred. Tables should also be commented, and should be commented using `---` instead of `--`. This is because `---` is used by some IDEs to generate documentation for the table.
+### Git
+
+Git is a powerful tool, and when used correctly can make the development process much smoother.
+
+#### Commits
+
+Commits are the bread and butter of git, and as such should be descriptive and concise.
+> Commits follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) standard, and should be prefixed with one of the following:
+> | Type | Usage |
+> | --- | --- |
+> | `build` | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm). |
+> | `chore` | Changes that don't modify src or test files. |
+> | `docs` | Documentation only changes. |
+> | `feat` | A new feature. |
+> | `fix` | A bug fix. |
+> | `perf` | A code change that improves performance. |
+> | `refactor` | A code change that neither fixes a bug nor adds a feature. |
+> | `revert` | Reverts a previous commit. |
+> | `style` | Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc). |
+> | `test` | Adding missing tests or correcting existing tests. |
+>
+> The commit message should be in the following format: `<type>(<scope>): <description>`.
+>
+> - `type` is the type of commit, as described above.
+> - `scope` is the scope of the commit, and is optional.
+> - `description` is a short description of the commit.
+>
+> If any changes introduce a breaking change, the commit should has it's type suffixed with a `!`, and the description should be prefixed with `BREAKING CHANGE: <description>`.
+
+<details>
+<summary>Example</summary>
+
+`
+feat(client): Add TeleportToPed Fn
+
+Add a function to teleport the player to a ped.
+`
+
+`
+revert(client)!: Revert Add TeleportToPed Fn
+
+BREAKING CHANGE: This reverts commit 123456.
+`
+
+</details>
+
+#### Versioning
+
+Versioning is a critical part of any software, and as such should be done correctly.
+> Versioning should follow the [Semantic Versioning](https://semver.org/) standard, and should be in the following format: `MAJOR.MINOR.PATCH`.
+>
+> - `MAJOR` version when you make incompatible API changes,
+> - `MINOR` version when you add functionality in a backwards compatible manner, and
+> - `PATCH` version when you make backwards compatible bug fixes.
+>
+> Pre-release versions should be suffixed with a `-` and the pre-release version, and build metadata should be suffixed with a `+` and the build metadata.
+>
+> The version should be stored in the `fxmanifest.lua` file, and should be updated with each release.
+
+<details>
+<summary>Example</summary>
 
 ```lua
---- The table that stores all the players data
-local Players = {}
+fx_version 'cerulean'
+game 'gta5'
+
+author 'DonHulieo'
+description 'A Style Guide for Lua in FiveM'
+url 'https://github.com/DonHulieo/lua-style-guide'
+version '1.0.0'
 ```
-
-
-When structuring tables, you should use the following rules:
-
-* Tables should be declared at the top of the file, and should be declared in the order that they are used
-* Tables can be accessed using `table.key` or `table['key']`, but the former is preferred
-* Tables should be commented using `---` instead of `--`
-
-### Class Structure
-
--- TODO
-
-## Optimisation
-
-### Caching
-
-Caching is the process of storing data in a variable, to avoid having to retrieve it again. This is important for optimisation, as it reduces the amount of times that the game has to retrieve data. Caching should be used for any data that is used multiple times, and should be used for any data that is used in a loop. Caching should be done using `local` variables, and should be done at the top of the file, or at the top of the function.
-
-```lua
-local player = PlayerPedId()
-local coords = GetEntityCoords(player)
-```
-
-When caching data, you should use the following rules:
-
-* Caching should be done using `local` variables, and should be done at the top of the file, or at the top of the function
-* Caching should be used for any data that is used multiple times, and should be used for any data that is used in a loop
-
-### Global Variables
-
-Caching is a perfect introduction to global variables, as they are what caching is trying to resolve. Global variables are variables that are declared outside of a function, and can be accessed by any function. This is bad practice, as it can cause issues with other scripts, and can cause issues with the script itself. Global variables should be avoided at all costs, and should only be used for data that is used across multiple files.
-
-When using global variables, you should use the following rules:
-
-* Unless absolutely necessary, global variables should be avoided at all costs
-
-### Garbage Collection
-
-Lua handles garbage collection natively, however, it is still good practice to empty variables that are no longer needed. This is because Lua will still have to perform garbage collection on the variable, and will still have to perform garbage collection on the data that the variable is storing. This can cause performance issues, and can cause memory leaks. This can be avoided by setting the variable to `nil`, or by using `table.remove` if the variable is a table key or value. This will remove the variable from memory, and will allow Lua to perform garbage collection on the variable.
-
-```lua
-local player = PlayerPedId()
-local coords = GetEntityCoords(player)
-
--- Remove the variables from memory
-player = nil
-coords = nil
-```
-
-While this serves well for smaller datasets, it's harder to manage on a larger datasets. For example, we have a function that sorts a table of vectors, clockwise from a given point. (If not using the table.sort method) This operation will cache the orginal table, and will create a new table to store the sorted data. As well as a variable to store the angle of the vector. This will result in 3 variables being cached, and 3 variables being removed from memory.
-
-```lua
-local function sortTable(t, center)
-  local sorted = {}
-  local function getAngle(p)
-    local angle = math.atan2(p.y - center.y, p.x - center.x)
-    if angle < 0 then
-      angle = angle + math.pi * 2
-    end
-    return angle
-  end
-  for i = 1, #t do
-    local inserted = false
-    for j = 1, #sorted do
-      if getAngle(t[i]) < getAngle(sorted[j]) then
-        table.insert(sorted, j, t[i])
-        inserted = true
-        break
-      end
-    end
-    if not inserted then
-      sorted[#sorted + 1] = t[i]
-    end
-  end
-  return sorted
-end
-
-RegisterNetEvent('don:client:SortTable', function(table)
-  local sorted = sortTable(table, vector3(0, 0, 0))
-  print(sorted)
-  collectgarbage("collect")
-end)
-```
-
-When removing variables from memory, you should use the following rules:
-
-* Variables should be removed from memory using `nil` or `table.remove`
-* Collection garabage after large operations to prevent memory leaks
-
-## Credits
-
-* [FiveM Documentation](https://docs.fivem.net/docs/scripting-reference/)
-* [Lua 5.1 Refernece Manual](http://www.lua.org/manual/5.1)
-* [Lua Style Guide](http://lua-users.org/wiki/LuaStyleGuide)
-* [Effective FiveM Lua](https://manason.github.io/effective-fivem-lua/)
-* [FiveM Style Guide for Lua](https://github.com/project-error/fivem-lua-style)
-* [Lua Language Server](https://github.com/LuaLS/lua-language-server/wiki)
