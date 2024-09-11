@@ -39,8 +39,8 @@ This document is a work in progress and is subject to change. If you have any su
 
 ### Indentation
 
-There's much debate over 2 or 4 spaces for indentation, while 4 spaces is the most common (amongst FiveM developers), 2 spaces is the most common amongst Lua developers.
-> The [Programming in Lua](https://www.lua.org/pil/contents.html) book, the [Lua Reference Manual](https://www.lua.org/manual/), the [Beginning Lua Programming](https://www.amazon.com.au/dp/0470069171?ref_=mr_referred_us_au_au) book, the [lua-users-wiki](http://lua-users.org/wiki/) and the [Project Error](https://github.com/project-error/fivem-lua-style) use 2 spaces for indentation. As such, to follow the lua standard, we will use 2 spaces for indentation.
+There is much debate over two or four spaces for indentation, while four spaces is the most common (amongst FiveM developers), two spaces is the most common amongst Lua developers.
+> The [Programming in Lua](https://www.lua.org/pil/contents.html) book, the [Lua Reference Manual](https://www.lua.org/manual/), the [Beginning Lua Programming](https://www.amazon.com.au/dp/0470069171?ref_=mr_referred_us_au_au) book, the [lua-users-wiki](http://lua-users.org/wiki/) and the [Project Error](https://github.com/project-error/fivem-lua-style) use two spaces for indentation. As such, to follow the lua standard, we will use **two** spaces for indentation.
 
 <details>
 <summary>Example</summary>
@@ -72,10 +72,10 @@ local function hello_world() return string end
 
 ### Comments
 
-Well written code should be self-documenting. However, there will be times where additional comments are needed.
+Well written code should be self-documenting however, there will be times where additional comments are needed.
 > Single line comments should have a space after the `--` and multiline comments should have `--` after the closing `]]`.
 >
-> Comments should endeavour to explain why the code is performing a function, opposed to what it is doing.
+> Comments should endeavour to explain *why* the code is performing a function, opposed to *what* function it is performing.
 >
 > Each region of code should be separated by a:
 >
@@ -114,8 +114,8 @@ end
 
 ### Constants
 
-Lua `5.4` introduced the `<const>` keyword and as such only resources which fxmanifest sets `lua54 'yes'` should use `<const>`. This keyword is also limiting, as once a variable is declared, it's [immutable](https://www.lua.org/manual/5.4/manual.html#3.3.7).
-> Constants should be named using `UPPER_SNAKE_CASE`[^1], with global constants prefixed with an underscore.
+Lua `5.4` introduced the `<const>` keyword and as such only resources which fxmanifest sets `lua54 'yes'` should use `<const>`. This keyword is also limiting as once a variable is declared, it's [immutable](https://www.lua.org/manual/5.4/manual.html#3.3.7).
+> Constants should be named using `UPPER_SNAKE_CASE`[^1], with *global* constants prefixed with an underscore.
 >
 > If available & applicable, the `<const>` keyword should be used as well to indicate that the variable is a constant.
 
@@ -133,10 +133,10 @@ local MY_LOCAL_CONSTANT = 0
 
 ### Variables
 
-One of Lua's strengths is it's dynamic typing and as such, it is important to name variables descriptively & unambiguously.
-> As a general rule, a variable should be more descriptive as it's scope gets larger. Using `i` and `k` inside a `for` loop is fine, but using them to describe a global variable is not.
+One of Lua's strengths is its dynamic typing and as such, it is important to name variables descriptively & unambiguously.
+> As a general rule, a variable should be more descriptive as its scope gets larger. Using `i` and `k` inside a `for` loop is fine, but using them to describe a global variable is not.
 >
-> Variables should be named using `snake_case`, with global variables using `UPPER_SNAKE_CASE`[^1].
+> Variables should be named using `snake_case`, with *global* variables using `UPPER_SNAKE_CASE`[^1].
 >
 > - `boolean` variables should be prefixed with a verb, prefixed with `is`, `has`, `can`, etc.
 > - `number`, `string` or `vector` variables should use a simple noun or adjective.
@@ -161,7 +161,7 @@ end
 
 ### Objects
 
-Objects are a powerful tool in Lua, storing all lua data types and can be arrays, objects, classes, or more. Due to their multi-faceted nature, there are some conventions we should follow.
+Objects are a powerful tool in Lua, storing all lua data types, allowing them to be arrays, objects, classes and more. Due to their multi-faceted nature, there are some conventions we should follow.
 > Objects should be named using `PascalCase` if outside the scope of a function, and `camelCase` if inside the scope of a function.
 >
 > Arrays should be declared without number keys, unless needed.
@@ -190,10 +190,12 @@ end
 
 ### Functions
 
-The Lua has 3 hidden beauties' that make it a powerful language. First is that functions are first class citizens, second is that it's scope is global by default and the third is it's automatic garbage collection. Having these be uniform helps maintain the spotlight on these features.
-> Local functions should be named using `snake_case`, with global functions should be named using `PascalCase`.
+The Lua has 3 hidden beauties' that make it a powerful language. First is that functions are first class citizens, second is that its scope is global by default and the third is its automatic garbage collection, this makes uniformity in naming functions essential to let these features shine.
+> Local functions should be named using `snake_case`, with *global* functions should be named using `PascalCase`.
 >
 > Functions should only be completing a single task and their name should reflect this.
+>
+> Functions should be decalred in precedence of their use, with all *local* functions at the top of the file, followed by *global* functions and then *class* functions.
 
 <details>
 <summary>Example</summary>
@@ -254,18 +256,24 @@ end
 </details>
 
 > [!NOTE]
-> Modules/packages are typically made with classes or class-like architecture, however, are named using `flatcase` and should not be prefixed with `C`. This is to imitate the libraries that Lua uses, such as `math`, `string`, etc.
+> Modules/packages are typically made with classes or class-like architecture however, are named using `flatcase` and should not be prefixed with `C`[^2]. This is to imitate the libraries that Lua uses, such as `math`, `string`, etc.
+
+[^2]: This is usually still done when naming the main object in annotation, as it is a class-like object.
+  ie. <!-- markdownlint-disable-next-line MD031 -->
+  ```lua
+  ---@class CInterval
+  ```
 
 ### Events
 
-Events are critical in FiveM, as they are used to communicate between the client and server and are used to trigger functions in each context.
+Events are critical in FiveM as they are used to communicate between contexts by triggering a function in another context.
 > Events should be named using `PascalCase` and should be prefixed with it's file name, as well as the context of the event:
 >
 >```lua
 > '[resource]:[context]:EventName'
 >```
 >
-> When declaring an event, there are 3 options depending on use and context:
+> When declaring an event, there are three options depending on use and context:
 >
 > - `AddEventHandler` for local events (client <---> client or server <---> server).
 > - `RegisterNetEvent` for Network events declared on the client.
@@ -293,10 +301,10 @@ RegisterServerEvent('don:server:KickPlayer', kick_player)
 ### Files
 
 Files are the main building blocks of any script or software, making knowing what you're working with all the more important.
-> Files should be named using `snake_case`, and they should either:
+> Files should be named using `snake_case` and they should either:
 >
 > - Be housed in a `client`, `server` or `shared` folder, and named accordingly.
-> - Prefixed with `cl_` or `sv_` depending on the context of the file.
+> - If not housed in a folder, be prefixed with `cl_`, `sv_` or `sh_` to indicate the context of the file.
 
 ### Git
 
@@ -323,9 +331,10 @@ Commits are the bread & butter of git and as such should be descriptive & concis
 >
 > - `type` is the type of commit, as described above.
 > - `scope` is the scope of the commit, and is optional.
+>   - Where scope is the relative path to the file that the commit is affecting.
 > - `description` is a short description of the commit.
 >
-> If any changes introduce a breaking change, the commit should has it's type (and scope) suffixed with a `!` and the a footer with the breaking change.
+> If any changes introduce a breaking change, the commit should has its type (and scope) suffixed with a `!` and the a footer with the breaking change.
 >
 > ```txt
 > > ![CAUTION]
